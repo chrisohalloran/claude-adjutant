@@ -1,6 +1,7 @@
 logs/
 .claude/settings.local.json
 .mcp.json
+knowledge/owner.md
 knowledge/chris.md
 knowledge/contacts/
 archive/

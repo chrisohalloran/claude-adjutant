@@ -12,6 +12,11 @@
     </array>
     <key>WorkingDirectory</key>
     <string>$HOME/adjutant</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>ANTHROPIC_API_KEY</key>
+        <string></string>
+    </dict>
     <key>KeepAlive</key>
     <true/>
     <key>RunAtLoad</key>

@@ -1,0 +1,61 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "WebSearch",
+      "WebFetch(*)",
+      "mcp__plugin_telegram_telegram__*",
+      "mcp__claude-in-chrome__*",
+      "mcp__chrome-devtools__*",
+      "mcp__claude_ai_Gmail__*",
+      "mcp__playwright__*",
+      "mcp__lightpanda__*"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(sudo rm -rf *)"
+    ],
+    "defaultMode": "bypassPermissions"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "agent",
+            "prompt": "FIRST: Check if stop_hook_active is true in the input. If it is, respond with {\"ok\": true} immediately — do NOT block again. OTHERWISE: Review the conversation. Were any of these discussed: new people, project updates, decisions made, deadlines, commitments, or preferences learned? If so, check if the relevant file in knowledge/ was updated, or if queue.md was updated, or if SOUL.md Learned Patterns was updated. If something was discussed but NOT saved, respond with {\"ok\": false, \"reason\": \"Update [file] with [what to save]\"}. If everything is captured, respond with {\"ok\": true}. $ARGUMENTS",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "agent",
+            "prompt": "Before compaction, extract any facts from this conversation that should persist: people mentioned, decisions, action items, project status changes, preferences learned. Append them to queue.md as Informational items with pointers to where the detail should be filed. Be concise — one line per item. $ARGUMENTS",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '## Queue State'; cat queue.md 2>/dev/null || echo 'No queue yet'; echo ''; echo '## Active Projects'; cat knowledge/projects/_active.md 2>/dev/null || echo 'No active projects yet'"
+          }
+        ]
+      }
+    ]
+  },
+  "outputStyle": "Adjutant"
+}

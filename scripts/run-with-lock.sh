@@ -34,6 +34,9 @@ trap 'rm -f "$LOCK_FILE"' EXIT
 # Ensure we're in the adjutant directory for CLAUDE.md and config discovery
 cd "$HOME/adjutant"
 
+# Unset API key so claude uses Max/Pro subscription instead of API credits
+unset ANTHROPIC_API_KEY
+
 # Run claude and capture output
 echo "$(date -Iseconds) Starting $LOCK_NAME" >> "$LOG_FILE"
 

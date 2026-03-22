@@ -1,4 +1,4 @@
-# Adjutant Setup Guide
+# Claude Adjutant Setup Guide
 
 An autonomous AI executive assistant. Zero code. Just markdown + Claude Code.
 
@@ -56,7 +56,7 @@ gh auth login
 /telegram:access policy allowlist
 ```
 
-## Step 2: Copy the Adjutant Folder
+## Step 2: Copy the Claude Adjutant Folder
 
 ```bash
 # Clone the repo (or copy the template)
@@ -70,7 +70,7 @@ Edit these files:
 1. **SOUL.md** — Update the identity, voice, and boundaries sections to match
    your personality and preferences. The Learned Patterns section grows over time.
 
-2. **knowledge/chris.md** — Replace with your own profile. Rename the file.
+2. **knowledge/owner.example.md** — Copy to `knowledge/owner.md` and fill in your profile.
 
 3. **knowledge/projects/_active.md** — Add your products and projects.
 
@@ -78,14 +78,34 @@ Edit these files:
 
 ## Step 4: Test Locally
 
+**Important:** If you have `ANTHROPIC_API_KEY` set in your environment, unset it.
+Claude Adjutant uses your Max/Pro subscription, not API credits. The API key will cause
+standalone processes (heartbeat, morning briefing) to fail with "credit balance
+too low."
+
+```bash
+# Check if API key is set (should be empty)
+echo $ANTHROPIC_API_KEY
+
+# If set, unset it for this session
+unset ANTHROPIC_API_KEY
+
+# Or permanently remove it from your shell profile (~/.zshrc, ~/.bashrc)
+```
+
 ```bash
 cd ~/adjutant
 
 # Test the main agent (interactive)
 claude
 
-# Test the heartbeat
-claude -p "$(cat heartbeat.md)" --model sonnet --max-turns 10
+# The heartbeat starts automatically in any session (configured in CLAUDE.md).
+# To test the standalone heartbeat process:
+./scripts/run-with-lock.sh heartbeat-test -p "$(cat heartbeat.md)" --model sonnet --max-turns 10
+
+# Verify it worked:
+grep "Last Heartbeat" queue.md
+cat logs/heartbeat-test.log
 
 # Test with Telegram channel
 claude --channels plugin:telegram@claude-plugins-official --model opus --effort medium
@@ -119,7 +139,7 @@ launchctl list | grep adjutant
 4. Wait 30 minutes — the heartbeat should process queue.md
 5. Check logs: `tail -f ~/adjutant/logs/channel-session.log`
 
-## How to Access Adjutant
+## How to Access Claude Adjutant
 
 Once deployed, you have four ways to interact — all hitting the same session:
 

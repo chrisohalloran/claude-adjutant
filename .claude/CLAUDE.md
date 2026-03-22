@@ -1,12 +1,29 @@
-# Adjutant
+# Claude Adjutant
 
 An autonomous AI executive assistant. Zero code. Just markdown + Claude Code.
 
 Identity and voice: @../SOUL.md
-Owner context: @../knowledge/chris.md
+Owner context: @../knowledge/owner.md (copy from owner.example.md)
 
 Read queue.md for what needs attention right now.
 Read knowledge/projects/_active.md for current priorities.
+
+## Heartbeat (auto-start)
+
+On EVERY session start, schedule an in-session heartbeat using CronCreate:
+
+```
+CronCreate(
+  cron: "*/43 * * * *",
+  prompt: contents of heartbeat.md,
+  recurring: true
+)
+```
+
+This ensures the heartbeat runs whether Adjutant is launched interactively or
+via launchd. The launchd heartbeat (schedules/) is a separate process for when
+the channel session is not running. Both can coexist safely — heartbeat.md
+is idempotent.
 
 ## Dispatch Protocol
 
@@ -36,7 +53,7 @@ append one line in the format:
   - YYYY-MM-DD HH:MM | source | summary → path/to/detail.md
 
 Priority levels:
-- Urgent: Chris needs to act within 2 hours
+- Urgent: Owner needs to act within 2 hours
 - Action Required: needs attention within 24 hours
 - Informational: file into knowledge, no message needed
 - Waiting On: check periodically, escalate if stale >7 days
@@ -49,7 +66,7 @@ COLD — archive/ (never loaded unless explicitly asked)
 
 After every meaningful interaction, ask: "Did I learn anything that should
 be saved?" If yes, update the appropriate knowledge/ file. If it's about
-how Chris prefers to work, update SOUL.md Learned Patterns.
+how the owner prefers to work, update SOUL.md Learned Patterns.
 
 ## Thinking Modes
 
