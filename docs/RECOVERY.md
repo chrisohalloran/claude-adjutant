@@ -13,10 +13,12 @@ tail -100 ~/adjutant/logs/channel-session.err | grep -c "restart"
 
 ## Level 2: Remote Recovery (From Your Phone)
 
-### Via Dispatch
-1. Open claude.ai/code on your phone or browser
-2. Connect to the Mac Mini session
-3. Diagnose and fix from there
+### Via Remote Control (claude.ai or Claude app)
+1. Open claude.ai/code on your phone/browser, or the Claude iOS/Android app
+2. Find the "Adjutant" session (green dot = online)
+3. Interact directly — same session, same files, same tools
+4. If the session shows offline, launchd should restart it within 30 seconds
+5. If still offline after a minute, escalate to Level 3 (SSH)
 
 ### Via Telegram
 If the channel session is running but behaving oddly, message your bot:

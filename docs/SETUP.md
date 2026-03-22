@@ -113,13 +113,45 @@ launchctl list | grep adjutant
 ## Step 6: Verify
 
 1. Send a message to your Telegram bot — you should get a response
-2. Wait 30 minutes — the heartbeat should process queue.md
-3. Check logs: `tail -f ~/adjutant/logs/channel-session.log`
+2. Open claude.ai/code — you should see "Adjutant" with a green dot (online)
+3. Click into the session from the web — you can interact from both Telegram
+   AND the web UI simultaneously
+4. Wait 30 minutes — the heartbeat should process queue.md
+5. Check logs: `tail -f ~/adjutant/logs/channel-session.log`
+
+## How to Access Adjutant
+
+Once deployed, you have four ways to interact — all hitting the same session:
+
+| Interface | How | Best for |
+|-----------|-----|----------|
+| **Telegram** | Message your bot | Quick requests from phone |
+| **claude.ai/code** | Open the "Adjutant" session | Full web UI, diff view, long interactions |
+| **Claude iOS/Android app** | Open the "Adjutant" session | Mobile access with full UI |
+| **SSH + terminal** | `ssh mac-mini.local` then `claude --continue` | Emergency recovery, debugging |
+
+Remote Control (--remote-control) is what makes the web and mobile access work.
+It connects claude.ai and the Claude app to your LOCAL session — your files,
+MCP servers, and tools all stay on your machine. Nothing runs in the cloud.
+
+### Requirements for Remote Control
+- Claude.ai login (not API key auth)
+- Claude Code v2.1.51+
+- Team/Enterprise: admin must enable Remote Control in Claude Code admin settings
+- Your Mac Mini must be awake and connected to the internet
+
+### If the web UI shows "offline"
+The local session has stopped or lost network. Recovery options:
+1. launchd KeepAlive should restart it automatically — wait 30 seconds
+2. SSH in and check: `launchctl list | grep adjutant`
+3. Force restart: `launchctl stop com.adjutant.channel-session`
+4. If network dropped for >10 minutes, Remote Control times out — launchd
+   restarts the process and a new Remote Control session is created
 
 ## Updating
 
 Edit any markdown file and the changes take effect on the next session or
-heartbeat run. No restart needed for knowledge/ or playbook changes.
+heartbeat run. No restart needed for knowledge/ or skill changes.
 
 For settings or hook changes, restart the channel session:
 ```bash
@@ -148,6 +180,10 @@ cd ~/adjutant
 claude --continue  # Resume the most recent session
 ```
 
-### Connect via Dispatch (from phone/browser)
-Open claude.ai/code and connect to your Mac Mini's session.
-Or use Remote Control: `claude --remote-control` on the Mac Mini.
+### Connect via Remote Control (from phone/browser)
+Open claude.ai/code or the Claude mobile app. Look for the "Adjutant"
+session — it should show a computer icon with a green status dot when
+online. Click into it to interact.
+
+If the session doesn't appear, the local process may have stopped.
+SSH in and check `launchctl list | grep adjutant`.
